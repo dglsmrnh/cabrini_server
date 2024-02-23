@@ -37,8 +37,6 @@ while True:  # Keep the server running indefinitely
                 isFirst = False
 
                 connectionSocket.send(bytes(str(r2), "utf-8"))
-                print("k value:", str(k))
-                print("Sent R2 back to Client:", str(r2))
             else:
                 decryptedSentence = ""
                 for c in received:
