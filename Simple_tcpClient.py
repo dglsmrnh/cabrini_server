@@ -2,6 +2,7 @@ from socket import *
 
 g = 11
 n = 33
+x = 32
 r1 = 0
 r2 = 0
 k = 0
@@ -14,14 +15,14 @@ clientSocket.connect((serverName,serverPort))
 while True:
 
     if not keySent:
-        x = input("Define a personal key for this connection: ")
         r1 = (g**x)%n
         keySent = True
-        clientSocket.send(bytes(r1, "utf-8"))
+        clientSocket.send(bytes(str(r1), "utf-8"))
         print("Waiting for server key...")
         r2 = int(clientSocket.recv(1024))
+        print("r2 = ", r2) #Remover depois
         k = (r2**x)%n
-        print("k = ", k)
+        print("k = ", k) #Remover depois
     else:
         rawSentence = input("Input lowercase sentence: ")
         if not rawSentence == "":
