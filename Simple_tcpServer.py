@@ -27,23 +27,33 @@ while True:  # Keep the server running indefinitely
             received = sentence.decode("utf-8")
             print("Received From Client:", received)
 
+            if received.lower() == 'exit':
+                connectionSocket.close()
+                break  # Exit the loop and wait for a new connection
+
             if isFirst:
                 r1 = int(received)
                 k = r1**y%n
                 isFirst = False
 
-                connectionSocket.send(bytes(r2, "utf-8"))
-                print("Sent R2 back to Client:", capitalizedSentence)
+                connectionSocket.send(bytes(str(r2), "utf-8"))
+                print("k value:", str(k))
+                print("Sent R2 back to Client:", str(r2))
             else:
-                capitalizedSentence = received.upper()  # Process the received data
+                decryptedSentence = ""
+                for c in received:
+                    decryptedSentence += chr(ord(c) - k)
 
-                connectionSocket.send(capitalizedSentence.encode("utf-8"))
+                print("decrypted sentence:", decryptedSentence) 
+                encryptedSentence = ""  # Process the received data
 
-                print("Sent back to Client:", capitalizedSentence)
+                for c in decryptedSentence.upper():
+                    encryptedSentence += chr(ord(c) + k)
 
-            if received.lower() == 'exit':
-                connectionSocket.close()
-                break  # Exit the loop and wait for a new connection
+                connectionSocket.send(encryptedSentence.encode("utf-8"))
+
+                print("Sent back to Client:", encryptedSentence)
+
     except ConnectionResetError as e:
         print(f"Connection reset by peer: {e}")
     except Exception as e:
