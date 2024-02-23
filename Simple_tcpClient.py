@@ -19,21 +19,28 @@ while True:
         keySent = True
         clientSocket.send(bytes(r1, "utf-8"))
         print("Waiting for server key...")
-        r2 = clientSocket.recv(1024)
+        r2 = int(clientSocket.recv(1024))
         k = (r2**x)%n
+        print("k = ", k)
     else:
-        sentence = input("Input lowercase sentence: ")
-        if not sentence == "":
+        rawSentence = input("Input lowercase sentence: ")
+        if not rawSentence == "":
+            sentence = ""
+            for c in rawSentence:
+                c = chr(ord(c) + k)
+                sentence += c
             clientSocket.send(bytes(sentence, "utf-8"))
             print("Waiting for answer...")
             modifiedSentence = clientSocket.recv(1024)
             rawText = str(modifiedSentence,"utf-8")
+            text = ""
             for c in rawText:
-                c = ord(c) + k
-            print ("Received from \"Make Upper Case\" Server: ", rawText)
-            if rawText == "EXIT":
-                clientSocket.detach()
-                r2 = 0
-                k = 0
-                keySent = False
-                break
+                c = chr(ord(c) - k)
+                text += c
+            print ("Received from \"Make Upper Case\" Server: ", text)
+        else:
+            clientSocket.detach()
+            r2 = 0
+            k = 0
+            keySent = False
+            break
